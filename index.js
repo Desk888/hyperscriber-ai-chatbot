@@ -12,6 +12,7 @@ const ALLOWED_PROMPTS = [
   'What is your name?',
   'Tell me a joke.',
   'What is the weather today?',
+  'What is the time?',
   // Add more prompts as needed
 ];
 
