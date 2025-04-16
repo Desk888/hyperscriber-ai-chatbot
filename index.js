@@ -16,7 +16,6 @@ const ALLOWED_PROMPTS = [
   // Add more prompts as needed
 ];
 
-
 app.use(cors());
 app.use(express.json());
 
