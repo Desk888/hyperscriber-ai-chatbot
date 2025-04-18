@@ -81,8 +81,8 @@ app.post('/api/contact', async (req, res) => {
   const client = new postmark.ServerClient(process.env.POSTMARK_SERVER_API_TOKEN);
   try {
     await client.sendEmail({
-      From: 'info@hyperscriber', 
-      To: 'info@hyperscriber',
+      From: 'info@hyperscriber.com', 
+      To: 'info@hyperscriber.com',
       ReplyTo: email,
       Subject: `New Contact Form Submission from ${name}`,
       TextBody: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
