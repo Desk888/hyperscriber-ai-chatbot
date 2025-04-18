@@ -73,12 +73,8 @@ app.post('/api/chat', async (req, res) => {
 // Contact form endpoint
 // Requires the following environment variables in your .env file:
 // SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
-// Example: 
-// SMTP_HOST=smtp.gmail.com
-// SMTP_PORT=465
-// SMTP_USER=your_smtp_username
-// SMTP_PASS=your_smtp_password
-//
+
+
 // Make sure less secure app access is enabled if using Gmail for testing.
 app.post('/api/contact', async (req, res) => {
   const { name, email, message } = req.body;
