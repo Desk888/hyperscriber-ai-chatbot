@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,7 +26,7 @@ app.get('/', (req, res) => {
 });
 
 // Chat endpoint
-app.post('/chat', async (req, res) => {
+app.post('/api/chat', async (req, res) => {
   const { message } = req.body;
   if (!message) {
     return res.status(400).json({ error: 'No message provided.' });
@@ -66,6 +67,55 @@ app.post('/chat', async (req, res) => {
   } catch (error) {
     console.error('Error from Perplexity API:', error?.response?.data || error.message);
     res.status(500).json({ error: 'Failed to get response from Perplexity AI.', details: error?.response?.data || error.message });
+  }
+});
+
+// Contact form endpoint
+// Requires the following environment variables in your .env file:
+// SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
+// Example: 
+// SMTP_HOST=smtp.gmail.com
+// SMTP_PORT=465
+// SMTP_USER=your_smtp_username
+// SMTP_PASS=your_smtp_password
+//
+// Make sure less secure app access is enabled if using Gmail for testing.
+app.post('/api/contact', async (req, res) => {
+  const { name, email, message } = req.body;
+  if (!name || !email || !message) {
+    return res.status(400).json({ error: 'Name, email, and message are required.' });
+  }
+
+  // Create reusable transporter object using SMTP
+  let transporter;
+  try {
+    transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: process.env.SMTP_PORT == 465, // true for 465, false for other ports
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to set up email transporter.' });
+  }
+
+  const mailOptions = {
+    from: `Contact Form <${process.env.SMTP_USER}>`,
+    to: 'info@hyperscriber',
+    subject: `New Contact Form Submission from ${name}`,
+    text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+    replyTo: email
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Message sent successfully!' });
+  } catch (error) {
+    console.error('Error sending contact email:', error);
+    res.status(500).json({ error: 'Failed to send email.' });
   }
 });
 
