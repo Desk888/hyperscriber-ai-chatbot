@@ -73,7 +73,7 @@ app.post('/api/chat', async (req, res) => {
 
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
-  const { name, email, message } = req.body;
+  const { name, email, company, message } = req.body;
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Name, email, and message are required.' });
   }
@@ -86,7 +86,7 @@ app.post('/api/contact', async (req, res) => {
       To: 'info@hyperscriber.com',
       ReplyTo: email,
       Subject: `New Contact Form Submission from ${name}`,
-      TextBody: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
+      TextBody: `Name: ${name}\nEmail: ${email}\nCompany: ${company}\nMessage: ${message}`
     });
     res.status(200).json({ message: 'Message sent successfully!' });
   } catch (error) {
